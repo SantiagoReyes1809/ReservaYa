@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gemini_ai_chat/gemini_ai_chat.dart';
+import 'package:gemini_ai_chat/gemini_ai.dart';
+import 'package:gemini_ai_chat/models/gemini_ai_response.dart'; // Added import
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -7,9 +8,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _geminiAIChat = GeminiAIChat(apiKey: 'YOUR_API_KEY');
+  final _geminiAI = GeminiAI(apiKey: 'YOUR_API_KEY'); // Create an instance of GeminiAI
   final _userInputController = TextEditingController();
-  final _messages = <String>[];
+  final _messages = <GeminiAIResponse>[];
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(_messages[index]),
-                );
+  title: Text(_messages[index].text), // Access the responseText property
+);
               },
             ),
           ),
@@ -46,9 +47,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 FloatingActionButton(
                   onPressed: () {
                     final userInput = _userInputController.text;
-                    _geminiAIChat.sendMessage(userInput).then((response) {
+                    _geminiAI.generateTextFromQuery(userInput).then((response) {
                       setState(() {
-                        _messages.add(response);
+                        _messages.add(response); // Add the GeminiAIResponse object to the list
                       });
                     });
                     _userInputController.clear();
